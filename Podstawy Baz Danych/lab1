@@ -1,0 +1,27 @@
+select companyname, address from Customers;
+select lastname, homephone from Employees;
+select productname, unitprice from Products;
+select categoryname, description from Categories;
+select companyname, homepage from Suppliers;
+
+select lastname from employees where country = 'USA';
+select orderid, customerid from orders where orderdate < '8/1/96';
+
+select companyname, address from Customers where city = 'London';
+select companyname, address from Customers where country IN ('Spain','France');
+select productname, unitprice from Products where unitprice between 20.0 AND 30.0;
+
+select companyname from Customers where companyname like '%Restaurant%';
+
+select productname,quantityperunit from Products where quantityperunit like '%bottle%';
+select Title from employees where lastname like '[B-L]%' ;
+
+select companyname,fax from customers where fax is null;
+select orderid, customerid from orders where (shippeddate is null or (shippeddate>getdate())) and shipcountry='Argentina';
+
+select companyname, country from customers order by country, companyname;
+select categoryid, productname, unitprice from products order by categoryid, unitprice Desc;
+select country, companyname from customers where country IN ('UK','Italy') order by country, companyname;
+
+select firstname,lastname,'identification number: ', employeeID
+select firstname+ ' ' +lastname as imienazwisko from employees;
