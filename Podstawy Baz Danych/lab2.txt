@@ -1,0 +1,10 @@
+Dom 1 zad 6
+use library select member_no, fine_assessed, fine_paid,fine_weived
+from loanhist
+where ISNULL(fine_assessed,0) > ISNULL(fine_paid,0) + ISNULL(fine_weived,0);
+
+CAST(title_no as char)
+CONVERT(varchar,title_no)
+STR(title_no, 2)
+
+lab2
