@@ -8,3 +8,36 @@ CONVERT(varchar,title_no)
 STR(title_no, 2)
 
 lab2
+
+select top 5 orderid, productid, quantity from [Order Details] order by quantity desc;
+select top 5 with ties orderid, productid, quantity from [Order Details] order by quantity desc;
+--prints ties with the last element
+
+select count(*) from Employees;
+select count(reportsto) from Employees; --doesn't count null values
+
+select count(*) from products  where unitprice not between 10 and 20;
+
+select top 1 unitprice from products where UnitPrice < 20 order by unitprice desc;
+
+select max(unitprice), min(unitprice) , avg(unitprice) from products where QuantityPerUnit like '%bottle%';
+
+select * from products where unitprice > (select avg(unitprice) from products);
+
+select sum(unitprice * quantity * (1 - discount)) from [Order Details]
+where orderid=10250;
+
+select productid, orderid, quantity from orderhist;
+
+select productid,sum(quantity) as total_quantity from orderhist group by productid;
+
+select max(unitprice) as max_price, orderid from [Order Details] group by orderid order by max_price desc;
+
+select max(unitprice), min(unitprice) from [Order Details] group by orderid;
+
+select shipvia, count(*) from orders group by shipvia;
+
+select shipvia, count(*) as liczba_zamowien from orders 
+where YEAR(shippeddate) = 1997 group by shipvia order by 2 desc;
+
+
