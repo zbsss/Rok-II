@@ -30,3 +30,25 @@ select reservation.isbn
 from reservation INNER JOIN member
 on reservation.member_no = member.member_no
 where member.firstname = 'Stephen' and member.lastname = 'Graff' and middleinitial='A';
+
+use northwind
+select products.productname, products.unitprice, suppliers.address 
+from products JOIN suppliers
+on products.supplierid = suppliers.supplierid
+where unitprice between 20 and 30; 
+
+use northwind
+select products.productname, products.unitsinstock 
+from products JOIN suppliers
+on products.supplierid = suppliers.supplierid
+where suppliers.companyname = 'Tokyo Traders'; 
+
+use northwind
+select Customers.address
+from customers LEFT OUTER JOIN orders
+on customers.customerid = orders.CustomerID and YEAR(orders.orderdate) = 1997
+where orders.orderdate is null;
+
+--CROSS JOIN iloczyn kartezjanski
+
+
