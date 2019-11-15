@@ -1,0 +1,32 @@
+use joindb select * from buyers;
+use joindb select * from sales;
+
+use joindb 
+select buyer_name, 
+		sales.buyer_id, qty
+from buyers LEFT OUTER JOIN sales
+on buyers.buyer_id  = sales.buyer_id
+where qty is null;
+
+
+use library select juvenile.member_no,juvenile.birth_date, member.lastname, member.firstname
+from juvenile INNER JOIN member
+on juvenile.member_no = member.member_no;
+
+
+use library select distinct title.title
+from title INNER JOIN loan
+on title.title_no = loan.title_no;
+
+use library 
+select distinct title.title, in_date, datediff(day, due_date, in_date) as difference, 
+				fine_paid, fine_assessed
+from title INNER JOIN loanhist
+on title.title_no = loanhist.title_no
+where title.title ='Tao Teh King' and in_date > due_date;
+
+use library 
+select reservation.isbn 
+from reservation INNER JOIN member
+on reservation.member_no = member.member_no
+where member.firstname = 'Stephen' and member.lastname = 'Graff' and middleinitial='A';
