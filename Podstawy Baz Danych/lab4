@@ -1,0 +1,105 @@
+USE northwind
+
+SELECT (firstname + ' ' + lastname) AS name,city, postalcode
+FROM employees
+UNION
+SELECT companyname, city, postalcode
+FROM customers;
+
+SELECT (firstname + ' ' + lastname) AS name,city, postalcode
+FROM employees
+EXCEPT
+SELECT companyname, city, postalcode
+FROM customers;
+
+SELECT (firstname + ' ' + lastname) AS name,city, postalcode
+FROM employees
+INTERSECT
+SELECT companyname, city, postalcode
+FROM customers;
+
+--union bez usuwania duplikatow
+SELECT (firstname + ' ' + lastname) AS name,city, postalcode
+FROM employees
+UNION ALL
+SELECT companyname, city, postalcode
+FROM customers;
+
+use library
+select m.firstname,m.lastname , count(*) as chilred_no
+from Juvenile as j 
+	join Adult as a on j.adult_member_no = a.member_no
+	join Member as m on m.member_no = a.member_no
+where a.state = 'AZ'
+group by m.member_no, m.firstname, m.lastname
+having count(*) > 2
+
+use library
+select m.firstname,m.lastname , count(*) as chilred_no
+from Juvenile as j 
+	join Adult as a on j.adult_member_no = a.member_no
+	join Member as m on m.member_no = a.member_no
+where a.state = 'AZ'
+group by m.member_no, m.firstname, m.lastname
+having count(*) > 2
+UNION
+select m.firstname,m.lastname , count(*) as chilred_no
+from Juvenile as j 
+	join Adult as a on j.adult_member_no = a.member_no
+	join Member as m on m.member_no = a.member_no
+where a.state = 'CA'
+group by m.member_no, m.firstname, m.lastname
+having count(*) > 3
+
+use northwind
+select cu.companyname, c.categoryname,   sum(d.quantity) as total_quantity
+from categories as c 
+	join products as p on c.categoryid = p.categoryid
+	join [order details] as d on d.productid = p.productid
+	join orders as o on o.orderid = d.orderid
+	join customers as cu on cu.Customerid = o.CustomerID
+group by c.categoryname, cu.CompanyName
+
+
+use northwind
+select cu.companyname, c.categoryname,   sum(d.quantity) as total_quantity
+from categories as c 
+	join products as p on c.categoryid = p.categoryid
+	join [order details] as d on d.productid = p.productid
+	join orders as o on o.orderid = d.orderid
+	join customers as cu on cu.Customerid = o.CustomerID
+group by c.categoryname, cu.CompanyName
+having sum(d.Quantity) > 250;
+
+--Dla każdego klienta (nazwa) podaj nazwy towarów, które zamówił
+select cu.companyname, p.productname
+from products as p
+	join [order details] as d on d.productid = p.productid
+	join orders as o on o.orderid = d.orderid
+	join customers as cu on cu.Customerid = o.CustomerID
+group by cu.CompanyName, p.productname
+
+--Dla każdego klienta (nazwa) podaj wartość poszczególnych
+--zamówień. Gdy klient nic nie zamówił też powinna pojawić się
+--informacja.
+select cu.companyname, o.OrderID, sum(d.unitprice * d.quantity * (1 -d.discount)) as total_value
+from products as p
+	join [order details] as d on d.productid = p.productid
+	join orders as o on o.orderid = d.orderid
+	right join customers as cu on cu.Customerid = o.CustomerID
+group by cu.CompanyName, o.orderid
+order by cu.CompanyName
+
+--Podaj czytelników (imię, nazwisko), którzy nigdy nie pożyczyli żadnej
+--książki.
+use library
+select member_no
+from member
+EXCEPT
+select distinct m.member_no
+from loanhist as lh 
+	join member as m on m.member_no = lh.member_no
+	join loan as l on l.member_no = m.member_no
+
+
+
