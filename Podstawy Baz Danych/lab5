@@ -3,3 +3,29 @@ select orderid,sum(od.unitprice * od.quantity * (1 - od.discount)) +
 from [Order Details] as od 
 group by orderid
 order by 1
+
+select companyname, address, city, country
+from customers as c
+where not exists (select * from orders as o where year(orderdate)=1997 and c.customerid=o.customerid)
+
+select companyname, address, city, country
+from customers as c
+where c.customerid not in (select o.CustomerID from orders as o where year(orderdate)=1997 and c.customerid=o.customerid)
+
+select ProductID,ProductName 
+from Products as p 
+where
+	(select count(*) from (select od.productID, o.customerid from [Order Details] as od 
+	inner join orders as o on o.OrderId=od.OrderID
+	where od.ProductID = p.ProductID
+	group by od.ProductID, o.CustomerID) as t
+	group by ProductID) > 1
+order by 1
+
+select p.ProductID,p.ProductName,  count(distinct customerid)
+from Products as p 
+	inner join [order details] as od  on od.productid = p.productid
+	inner join orders as o on o.OrderId=od.OrderID	
+group by p.ProductID, p.ProductName
+having count(distinct customerid) > 1
+order by 1
