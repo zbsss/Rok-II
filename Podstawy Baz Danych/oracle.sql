@@ -123,3 +123,20 @@ VALUES (21,10,'P');
 select * from WYCIECZKI;
 
 select * from RezerwacjeWPrzyszlosci
+
+create view WycieczkiMiejsca
+ as
+    select
+     w.ID_WYCIECZKI,
+     w.NAZWA,
+     w.KRAJ,
+     w.DATA,
+     w.LICZBA_MIEJSC,
+    w.LICZBA_MIEJSC - a.zajete
+     FROM WYCIECZKI w
+     join
+
+(select w.ID_WYCIECZKI ,count(r.ID_WYCIECZKI)  zajete
+from WYCIECZKI w
+join REZERWACJE r on w.ID_WYCIECZKI = r.ID_WYCIECZKI
+group by w.ID_WYCIECZKI) A on A.ID_WYCIECZKI=w.ID_WYCIECZKI
