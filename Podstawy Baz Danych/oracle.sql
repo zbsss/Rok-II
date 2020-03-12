@@ -132,11 +132,26 @@ create view WycieczkiMiejsca
      w.KRAJ,
      w.DATA,
      w.LICZBA_MIEJSC,
-    w.LICZBA_MIEJSC - a.zajete
-     FROM WYCIECZKI w
-     join
+    w.LICZBA_MIEJSC - WolneMiejsca(w.ID_WYCIECZKI) as wolne
+     FROM WYCIECZKI w;
 
-(select w.ID_WYCIECZKI ,count(r.ID_WYCIECZKI)  zajete
-from WYCIECZKI w
-join REZERWACJE r on w.ID_WYCIECZKI = r.ID_WYCIECZKI
-group by w.ID_WYCIECZKI) A on A.ID_WYCIECZKI=w.ID_WYCIECZKI
+
+CREATE  OR REPLACE FUNCTION WolneMiejsca (IDWYCIECZKI int)
+   RETURN int
+   IS result INT;
+BEGIN
+    select count(r.ID_WYCIECZKI) into result
+    from WYCIECZKI wy
+    join REZERWACJE r on wy.ID_WYCIECZKI = r.ID_WYCIECZKI
+    where wy.ID_WYCIECZKI = IDWYCIECZKI;
+
+    return result;
+END WolneMiejsca;
+
+select * from WYCIECZKI;
+select * from rezerwacje;
+
+select WolneMiejsca(5) from DUAL;
+
+select * from WycieczkiMiejsca;
+select * from rezerwacje;
