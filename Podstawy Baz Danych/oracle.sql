@@ -169,3 +169,29 @@ create view WycieczkiDostepne
     where w.DATA > CURRENT_DATE and WolneMiejsca(w.ID_WYCIECZKI) > 0;
 
 select * from WycieczkiDostepne;
+
+create or replace type t_uczestnik_row as object(
+    ID_WYCIECZKI INT,
+    IMIE VARCHAR2(50),
+    NAZWISKO VARCHAR(50),
+    PESEL VARCHAR2(11),
+    STATUS char(1),
+    NR_REZERWACJI int
+                                            );
+
+create or replace type t_uczestnik_table as table of t_uczestnik_row;
+
+CREATE  OR REPLACE FUNCTION UczestnicyWycieczki (idWycieczki int)
+   RETURN t_uczestnik_table PIPELINED IS
+BEGIN
+    for i IN
+   (select w.ID_WYCIECZKI, o.IMIE, o.NAZWISKO, o.PESEL, r.STATUS, r.NR_REZERWACJI
+    from WYCIECZKI w
+    join REZERWACJE r on w.ID_WYCIECZKI = r.ID_WYCIECZKI
+    join OSOBY o on o.ID_OSOBY = r.ID_OSOBY
+    where w.ID_WYCIECZKI = idWycieczki) LOOP
+        PIPE ROW(t_uczestnik_row(i.ID_WYCIECZKI,i.IMIE,i.NAZWISKO,i.PESEL,i.STATUS,i.NR_REZERWACJI));
+
+        end loop;
+    return;
+END UczestnicyWycieczki;
