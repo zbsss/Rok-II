@@ -155,3 +155,17 @@ select WolneMiejsca(5) from DUAL;
 
 select * from WycieczkiMiejsca;
 select * from rezerwacje;
+
+create view WycieczkiDostepne
+ as
+    select
+     w.ID_WYCIECZKI,
+     w.NAZWA,
+     w.KRAJ,
+     w.DATA,
+     w.LICZBA_MIEJSC,
+    w.LICZBA_MIEJSC - WolneMiejsca(w.ID_WYCIECZKI) as wolne
+     FROM WYCIECZKI w
+    where w.DATA > CURRENT_DATE and WolneMiejsca(w.ID_WYCIECZKI) > 0;
+
+select * from WycieczkiDostepne;
