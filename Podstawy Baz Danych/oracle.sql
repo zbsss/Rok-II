@@ -195,3 +195,55 @@ BEGIN
         end loop;
     return;
 END UczestnicyWycieczki;
+                                 
+                                 
+select UczestnicyWycieczki(2) from DUAL;
+
+CREATE  OR REPLACE FUNCTION RezerwacjeOsoby (idRezerwacji int)
+   RETURN t_uczestnik_table PIPELINED IS
+BEGIN
+    for i IN
+   (select w.ID_WYCIECZKI, o.IMIE, o.NAZWISKO, o.PESEL, r.STATUS, r.NR_REZERWACJI
+    from WYCIECZKI w
+    join REZERWACJE r on w.ID_WYCIECZKI = r.ID_WYCIECZKI
+    join OSOBY o on o.ID_OSOBY = r.ID_OSOBY
+    where r.NR_REZERWACJI = idRezerwacji) LOOP
+        PIPE ROW(t_uczestnik_row(i.ID_WYCIECZKI,i.IMIE,i.NAZWISKO,i.PESEL,i.STATUS,i.NR_REZERWACJI));
+
+        end loop;
+    return;
+END RezerwacjeOsoby;
+
+select * from REZERWACJE;
+select RezerwacjeOsoby(2) from DUAL;
+
+
+
+create or replace type t_wycieczki_row as object(
+    ID_WYCIECZKI INT,
+    NAZWA VARCHAR2(50),
+    DATA DATE,
+    WOLNE int,
+    KRAJ varchar2(50)
+                                            );
+
+create or replace type t_wycieczki_table as table of t_wycieczki_row;
+
+
+CREATE  OR REPLACE FUNCTION DostepneWycieczki (kraj_wysz varchar2, data_od DATE, data_do DATE)
+   RETURN t_wycieczki_table PIPELINED IS
+BEGIN
+    for i IN
+   (select w.ID_WYCIECZKI, w.NAZWA, w.DATA, WolneMiejsca(w.ID_WYCIECZKI) wolne, w.KRAJ
+    from WYCIECZKI w
+    where w.KRAJ = kraj_wysz and w.DATA >= data_od and w.DATA <= data_do) LOOP
+        PIPE ROW(t_wycieczki_row(i.ID_WYCIECZKI,i.NAZWA,i.DATA,i.wolne,i.KRAJ));
+    end loop;
+    return;
+END DostepneWycieczki;
+
+select * from WYCIECZKI;
+select DostepneWycieczki('Francja',TO_DATE('01/01/2015','dd/mm/yyyy'),TO_DATE('01/01/2030','dd/mm/yyyy')) from DUAL;
+                                                                              
+
+                                 
