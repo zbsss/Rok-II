@@ -245,5 +245,54 @@ END DostepneWycieczki;
 select * from WYCIECZKI;
 select DostepneWycieczki('Francja',TO_DATE('01/01/2015','dd/mm/yyyy'),TO_DATE('01/01/2030','dd/mm/yyyy')) from DUAL;
                                                                               
+create or replace procedure DodajRezerwacje(id_wyciecz int, id_os int)
+is
+begin
 
-                                 
+    for c in (select ID_WYCIECZKI from WycieczkiDostepne)
+    loop
+        if id_wyciecz = c.ID_WYCIECZKI then
+            insert into REZERWACJE(id_wycieczki, id_osoby, status)
+            values (id_wyciecz, id_os, 'P');
+        end if;
+    end loop;
+end DodajRezerwacje;
+
+begin
+    DodajRezerwacje(21,2);
+end;
+
+create or replace procedure ZmienStatusRezerwacji(nr_rez int, stat int)
+is
+begin
+    for c in (select R.STATUS prev, W.LICZBA_MIEJSC, W.ID_WYCIECZKI from REZERWACJE r join WYCIECZKI W on r.ID_WYCIECZKI = W.ID_WYCIECZKI)
+    loop
+        if stat in ('N','P','Z','A') then
+            if c.prev = 'A' and c.LICZBA_MIEJSC - WolneMiejsca(c.ID_WYCIECZKI) > 0 then
+                update REZERWACJE
+                    set STATUS = stat
+                where NR_REZERWACJI = nr_rez;
+            elsif c.prev <> 'A' then
+                update REZERWACJE
+                    set STATUS = stat
+                where NR_REZERWACJI = nr_rez;
+            end if;
+        end if;
+    end loop;
+end ZmienStatusRezerwacji;
+
+create or replace procedure ZmienLiczbeMiejsc(id_wyciecz int, l_miejsc int)
+is
+begin
+
+    for c in (select ID_WYCIECZKI, LICZBA_MIEJSC from WycieczkiDostepne)
+    loop
+        if id_wyciecz = c.ID_WYCIECZKI and l_miejsc >= WolneMiejsca(id_wyciecz) then
+            update WYCIECZKI
+            set LICZBA_MIEJSC = l_miejsc
+            where ID_WYCIECZKI = id_wyciecz;
+        end if;
+    end loop;
+end ZmienLiczbeMiejsc;
+                                                                              
+                                                                              
