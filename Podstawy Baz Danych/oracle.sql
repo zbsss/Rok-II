@@ -272,10 +272,16 @@ begin
                 update REZERWACJE
                     set STATUS = stat
                 where NR_REZERWACJI = nr_rez;
+
+                insert into REZERWACJE_LOG(ID_REZERWACJI, data, status)
+                values (nr_rez, CURRENT_DATE, stat);
             elsif c.prev <> 'A' then
                 update REZERWACJE
                     set STATUS = stat
                 where NR_REZERWACJI = nr_rez;
+
+                insert into REZERWACJE_LOG(ID_REZERWACJI, data, status)
+                values (nr_rez, CURRENT_DATE, stat);
             end if;
         end if;
     end loop;
